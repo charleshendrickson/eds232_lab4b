@@ -123,7 +123,6 @@ For this reason we will use larger layers. Let's go with 64 units:
 ```{r}
 model <- keras_model_sequential() %>% 
   layer_dense(units = 64, activation = "relu", input_shape = c(10000)) %>% 
-  layer_dense(units = 64, activation = "relu") %>% 
   layer_dense(units = 46, activation = "softmax")
 ```
 
@@ -181,7 +180,6 @@ The network begins to overfit after nine epochs. Let's train a new network from 
 ```{r, echo=TRUE, results='hide'}
 model <- keras_model_sequential() %>% 
   layer_dense(units = 64, activation = "relu", input_shape = c(10000)) %>% 
-  layer_dense(units = 64, activation = "relu") %>% 
   layer_dense(units = 46, activation = "softmax")
   
 model %>% compile(
@@ -261,8 +259,7 @@ We mentioned earlier that since our final outputs were 46-dimensional, we should
 
 ```{r, echo=TRUE, results='hide'}
 model <- keras_model_sequential() %>% 
-  layer_dense(units = 64, activation = "relu", input_shape = c(10000)) %>% 
-  layer_dense(units = 4, activation = "relu") %>% 
+  layer_dense(units = 4, activation = "relu", input_shape = c(10000)) %>% 
   layer_dense(units = 46, activation = "softmax")
   
 model %>% compile(
@@ -280,12 +277,18 @@ model %>% fit(
 )
 ```
 
+
 Our network now seems to peak at ~71% test accuracy, a 8% absolute drop. This drop is mostly due to the fact that we are now trying to compress a lot of information (enough information to recover the separation hyperplanes of 46 classes) into an intermediate space that is too low-dimensional. The network is able to cram _most_ of the necessary information into these 8-dimensional representations, but not all of it.
 
 ## Further experiments
 
 * Try using larger or smaller layers: 32 units, 128 units...
+
+**By using 128 units, our approach increased slightly to an accuracy of ~79%. With a balanced binary classification problem, the accuracy reached was about 20%. (the was increased loss = 1.0500493, and little change in accuracy = 0.7876225)**
+
 * We were using two hidden layers. Now try to use a single hidden layer, or three hidden layers.
+
+**By only using one hidden layer, the accuracy and the val_accuracy are much more similar in value than before when we compress the information into the 4 dimensional intermediate layers.**
 
 ## Wrapping up
 
